@@ -1,16 +1,8 @@
 package com.consultamedica.consulta.dto;
 
 import com.consultamedica.consulta.domain.entity.Paciente;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
 

@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GeneratedColumn;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -19,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 public class Paciente {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

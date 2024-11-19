@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -47,6 +46,5 @@ public class Consulta {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "atualizado_em", nullable = false, updatable = false)
     private Date atualizadoEm;
-
 
 }
