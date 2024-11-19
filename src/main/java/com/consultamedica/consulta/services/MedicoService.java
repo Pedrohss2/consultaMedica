@@ -6,6 +6,7 @@ import com.consultamedica.consulta.dto.MedicoDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -20,7 +21,7 @@ public class MedicoService {
     @Autowired
     private ModelMapper modelMapper;
 
-    private MedicoDTO findById(Long id) {
+    public MedicoDTO findById(Long id) {
         Medico medico = medicoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Medico não encontrado!"));
 
         return new MedicoDTO(medico);
@@ -37,4 +38,31 @@ public class MedicoService {
         return  modelMapper.map(medico, MedicoDTO.class);
     }
 
+
+    public MedicoDTO update(Long id, MedicoDTO dto) {
+        try {
+            Medico medico = modelMapper.map(dto, Medico.class);
+
+            medico.setCriadoEm(Date.from(Instant.now()));
+            medico.setAtualizadoEm(Date.from(Instant.now()));
+
+            medicoRepository.save(medico);
+
+            return  modelMapper.map(medico, MedicoDTO.class);
+
+        } catch (EntityNotFoundException error) {
+            throw new NullPointerException("Paciente não encontrado");
+        }
+    }
+
+    public void delete(Long id) {
+        medicoRepository.findById(id).orElseThrow(() -> new NullPointerException("Medico não encontrado"));
+
+        try {
+            medicoRepository.deleteById(id);
+
+        }catch (DataIntegrityViolationException error) {
+            throw new DataIntegrityViolationException("Erro ao deletar o paciente - DataIntegrityViolationException");
+        }
+    }
 }
