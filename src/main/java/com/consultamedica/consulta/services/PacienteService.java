@@ -3,6 +3,8 @@ package com.consultamedica.consulta.services;
 import com.consultamedica.consulta.domain.entity.Paciente;
 import com.consultamedica.consulta.domain.repository.PacienteRepository;
 import com.consultamedica.consulta.dto.PacienteDTO;
+import com.consultamedica.consulta.services.Exceptions.BancoDeDadosException;
+import com.consultamedica.consulta.services.Exceptions.RecursoNaoEncontradoException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -24,7 +26,7 @@ public class PacienteService {
 
     @Transactional
     public PacienteDTO findById(Long id) {
-        Paciente paciente = pacienteRepository.findById(id).orElseThrow(() -> new NullPointerException("Pacinte não encontrado"));
+        Paciente paciente = pacienteRepository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Pacinte não encontrado"));
 
         return new PacienteDTO(paciente);
     }
@@ -52,18 +54,18 @@ public class PacienteService {
             return  modelMapper.map(paciente, PacienteDTO.class);
 
         } catch (EntityNotFoundException error) {
-            throw new NullPointerException("Paciente não encontrado");
+            throw new RecursoNaoEncontradoException("Paciente não encontrado");
         }
     }
 
     public void delete(Long id) {
-        pacienteRepository.findById(id).orElseThrow(() -> new NullPointerException("Pacinte não encontrado"));
+        pacienteRepository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Pacinte não encontrado"));
 
         try {
             pacienteRepository.deleteById(id);
 
         }catch (DataIntegrityViolationException error) {
-            throw new DataIntegrityViolationException("Erro ao deletar o paciente - DataIntegrityViolationException");
+            throw new BancoDeDadosException("Erro ao deletar o paciente - DataIntegrityViolationException");
         }
     }
 

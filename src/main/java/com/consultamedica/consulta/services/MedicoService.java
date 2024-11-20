@@ -3,6 +3,8 @@ package com.consultamedica.consulta.services;
 import com.consultamedica.consulta.domain.entity.Medico;
 import com.consultamedica.consulta.domain.repository.MedicoRepository;
 import com.consultamedica.consulta.dto.MedicoDTO;
+import com.consultamedica.consulta.services.Exceptions.BancoDeDadosException;
+import com.consultamedica.consulta.services.Exceptions.RecursoNaoEncontradoException;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,7 @@ public class MedicoService {
     private ModelMapper modelMapper;
 
     public MedicoDTO findById(Long id) {
-        Medico medico = medicoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Medico não encontrado!"));
+        Medico medico = medicoRepository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Medico não encontrado!"));
 
         return new MedicoDTO(medico);
     }
@@ -38,7 +40,6 @@ public class MedicoService {
         return  modelMapper.map(medico, MedicoDTO.class);
     }
 
-
     public MedicoDTO update(Long id, MedicoDTO dto) {
         try {
             Medico medico = modelMapper.map(dto, Medico.class);
@@ -51,18 +52,18 @@ public class MedicoService {
             return  modelMapper.map(medico, MedicoDTO.class);
 
         } catch (EntityNotFoundException error) {
-            throw new NullPointerException("Paciente não encontrado");
+            throw new RecursoNaoEncontradoException("Paciente não encontrado");
         }
     }
 
     public void delete(Long id) {
-        medicoRepository.findById(id).orElseThrow(() -> new NullPointerException("Medico não encontrado"));
+        medicoRepository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Medico não encontrado"));
 
         try {
             medicoRepository.deleteById(id);
 
         }catch (DataIntegrityViolationException error) {
-            throw new DataIntegrityViolationException("Erro ao deletar o paciente - DataIntegrityViolationException");
+            throw new BancoDeDadosException("Erro ao deletar o paciente ");
         }
     }
 }

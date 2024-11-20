@@ -3,6 +3,8 @@ package com.consultamedica.consulta.services;
 import com.consultamedica.consulta.domain.entity.Consulta;
 import com.consultamedica.consulta.domain.repository.ConsultaRepository;
 import com.consultamedica.consulta.dto.ConsultaDTO;
+import com.consultamedica.consulta.services.Exceptions.BancoDeDadosException;
+import com.consultamedica.consulta.services.Exceptions.RecursoNaoEncontradoException;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,7 @@ public class ConsultaService {
     private ModelMapper modelMapper;
 
     public ConsultaDTO findById(Long id) {
-        Consulta consulta = consutaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Consulta não encontrada!"));
+        Consulta consulta = consutaRepository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Consulta não encontrada!"));
 
         return new ConsultaDTO(consulta);
     }
@@ -38,7 +40,7 @@ public class ConsultaService {
         return  modelMapper.map(consulta, ConsultaDTO.class);
     }
 
-        public ConsultaDTO update(Long id, ConsultaDTO dto) {
+    public ConsultaDTO update(Long id, ConsultaDTO dto) {
         try {
             Consulta consulta = modelMapper.map(dto, Consulta.class);
 
@@ -50,18 +52,18 @@ public class ConsultaService {
             return  modelMapper.map(consulta, ConsultaDTO.class);
 
         } catch (EntityNotFoundException error) {
-            throw new NullPointerException("Paciente não encontrado");
+            throw new RecursoNaoEncontradoException("Paciente não encontrado");
         }
     }
 
     public void delete(Long id) {
-        consutaRepository.findById(id).orElseThrow(() -> new NullPointerException("Pacinte não encontrado"));
+        consutaRepository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException("Pacinte não encontrado"));
 
         try {
             consutaRepository.deleteById(id);
 
         }catch (DataIntegrityViolationException error) {
-            throw new DataIntegrityViolationException("Erro ao deletar o paciente - DataIntegrityViolationException");
+            throw new BancoDeDadosException("Erro ao deletar o paciente - DataIntegrityViolationException");
         }
     }
 }

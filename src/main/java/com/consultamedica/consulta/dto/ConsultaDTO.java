@@ -1,6 +1,7 @@
 package com.consultamedica.consulta.dto;
 
 import com.consultamedica.consulta.domain.entity.Consulta;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ public class ConsultaDTO {
 
     private LocalDateTime horaAgendamento;
 
+    @NotBlank(message = "Campo 'local' não pode ser vazio/null")
     private String local;
 
     private String descricao;
