@@ -21,6 +21,9 @@ public class ConsultaService {
     private ConsultaRepository consutaRepository;
 
     @Autowired
+    private  EmailService emailService;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     public ConsultaDTO findById(Long id) {
@@ -65,5 +68,30 @@ public class ConsultaService {
         }catch (DataIntegrityViolationException error) {
             throw new BancoDeDadosException("Erro ao deletar o paciente - DataIntegrityViolationException");
         }
+    }
+
+
+    private void enviarEmailParaPaciente(Consulta consulta) {
+        String emailPaciente = consulta.getPaciente().getEmail();
+        String assunto = "Consulta Agendada";
+        String corpoEmail = String.format(
+                "Olá %s,<br><br> Sua consulta com o Dr(a). %s foi agendada para %s.<br><br>Atenciosamente,<br>Equipe de Consultas",
+                consulta.getPaciente().getNome(),
+                consulta.getMedico().getNome(),
+                consulta.getHoraAgendamento().toString()
+        );
+        emailService.sendEmail(emailPaciente, assunto, corpoEmail);
+    }
+
+    private void enviarEmailParaMedico(Consulta consulta) {
+        String emailMedico = consulta.getMedico().getEmail();
+        String assunto = "Nova Consulta Agendada";
+        String corpoEmail = String.format(
+                "Olá Dr(a). %s,<br><br> Uma nova consulta foi agendada com o paciente %s para %s.<br><br>Atenciosamente,<br>Equipe de Consultas",
+                consulta.getMedico().getNome(),
+                consulta.getPaciente().getNome(),
+                consulta.getHoraAgendamento().toString()
+        );
+        emailService.sendEmail(emailMedico, assunto, corpoEmail);
     }
 }
